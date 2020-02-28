@@ -9,8 +9,8 @@ public class Wall : MonoBehaviour
     private void Awake()
     {
         renderer = this.GetComponent<SpriteRenderer>();
+        renderer.enabled = false;
     }
-
     private void Update()
     {
         Vector3 dir = this.transform.parent.position - this.transform.position;
@@ -22,9 +22,19 @@ public class Wall : MonoBehaviour
     {
         if (collision.collider.CompareTag("Player"))
         {
-            renderer.enabled = true;
-            StartCoroutine(WaitAndHideDisplay());
+            //renderer.enabled = true;
+            //StartCoroutine(WaitAndHideDisplay());
         }       
+    }
+
+    public void ActivateRenderer()
+    {
+        if (!renderer.enabled)
+        {
+            renderer.enabled = true;
+            this.name += " Cleared";
+            StartCoroutine(WaitAndHideDisplay());
+        }
     }
 
     private IEnumerator WaitAndHideDisplay()
@@ -34,5 +44,4 @@ public class Wall : MonoBehaviour
 
         renderer.enabled = false;
     }
-
 }

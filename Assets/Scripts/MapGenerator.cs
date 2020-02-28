@@ -1,18 +1,80 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
+//[ExecuteInEditMode]
 public class MapGenerator : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] private LookAt2D wallPrefab;
+
+    [SerializeField] private uint segments;
+    [SerializeField] private uint xRadius;
+    [SerializeField] private uint yRadius;
+    [SerializeField] private EdgeCollider2D collider;
+
+    public bool test;
+    public bool clear;
+
+    public Transform Center;
+
+    private List<GameObject> listOfGameobjects;
+    private List<Wall> walls;
+
+    private void Awake()
     {
-        
+        walls = new List<Wall>();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void Update()
     {
-        
+        if (test)
+        {
+            SetupCircle();
+            test = false;
+        }
+
+        if (clear)
+        {
+            foreach (var item in listOfGameobjects)
+            {
+                DestroyImmediate(item);
+            }
+            clear = false;
+            listOfGameobjects.Clear();
+        }
+    }
+
+    public void SetupCircle()
+    {
+        float delta = 0;
+        float deltaTheta = 360 / segments;
+        listOfGameobjects = new List<GameObject>();
+
+        for (int i = 0; i < segments; i++)
+        {
+            float x = Mathf.Sin(Mathf.Deg2Rad * delta) * xRadius;
+            float y = Mathf.Cos(Mathf.Deg2Rad * delta) * yRadius;
+            LookAt2D clone = Instantiate(wallPrefab, new Vector3(x, y), Quaternion.identity, this.transform);
+            clone.name = i.ToString();
+            clone.SetTarget(Center);
+            listOfGameobjects.Add(clone.gameObject);
+            walls.Add(clone.GetComponent<Wall>());
+            delta += deltaTheta;
+        }
+
+        SetCollider();
+    }
+
+    public void SetCollider()
+    {
+        List<Vector2> points = GetWalls().Select(it => new Vector2(it.transform.position.x, it.transform.position.y)).ToList(); ;
+        points.Add(points[0]);
+        collider.points = points.ToArray();
+    }
+
+    public List<Wall> GetWalls()
+    {
+        return walls;
     }
 }
