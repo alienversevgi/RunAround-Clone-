@@ -47,7 +47,7 @@ public class MapGenerator : MonoBehaviour
 
     public void SetupCircle()
     {
-        float delta = 0;
+        float delta = 20;
         float deltaTheta = 360 / segments;
         listOfGameobjects = new List<GameObject>();
 

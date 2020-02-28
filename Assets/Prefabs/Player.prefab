@@ -117,7 +117,7 @@ Rigidbody2D:
   m_GravityScale: 0
   m_Material: {fileID: 0}
   m_Interpolate: 0
-  m_SleepingMode: 1
+  m_SleepingMode: 0
   m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!114 &1806033340335025765
@@ -132,11 +132,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84b9c53b60229044b8237fc9d62c32a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Rigidbody2D: {fileID: 1806033340335025819}
-  speed: 0.1
+  speed: 5.6
   jumpForce: 500
-  isDetect: 0
   mapGenerator: {fileID: 0}
+  Rigidbody2D: {fileID: 1806033340335025819}
+  isMovingPlayer: 0
 --- !u!114 &1806033340335025764
 MonoBehaviour:
   m_ObjectHideFlags: 0

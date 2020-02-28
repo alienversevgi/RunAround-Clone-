@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1241406276834793214}
   - component: {fileID: 1241406276834793185}
-  - component: {fileID: 4710985692602623799}
   - component: {fileID: 7629158915549393737}
+  - component: {fileID: 4710985692602623799}
   m_Layer: 0
   m_Name: Map
   m_TagString: Untagged
@@ -82,27 +82,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &4710985692602623799
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1241406276834793184}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8e757afdb1fab1848bd3b85d5806e1ed, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  wallPrefab: {fileID: 6177900724329678474, guid: 9962e6a709978ca40840d4e45ad4a990,
-    type: 3}
-  segments: 180
-  xRadius: 8
-  yRadius: 8
-  collider: {fileID: 7629158915549393737}
-  test: 0
-  clear: 0
-  Center: {fileID: 3877555762725483365}
 --- !u!68 &7629158915549393737
 EdgeCollider2D:
   m_ObjectHideFlags: 0
@@ -121,6 +100,27 @@ EdgeCollider2D:
   m_Points:
   - {x: -0.025, y: 0}
   - {x: 0.025, y: 0}
+--- !u!114 &4710985692602623799
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1241406276834793184}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e757afdb1fab1848bd3b85d5806e1ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  wallPrefab: {fileID: 6177900724329678474, guid: 9962e6a709978ca40840d4e45ad4a990,
+    type: 3}
+  segments: 120
+  xRadius: 4
+  yRadius: 4
+  collider: {fileID: 7629158915549393737}
+  test: 0
+  clear: 0
+  Center: {fileID: 3877555762725483365}
 --- !u!1 &4614055743268920169
 GameObject:
   m_ObjectHideFlags: 0

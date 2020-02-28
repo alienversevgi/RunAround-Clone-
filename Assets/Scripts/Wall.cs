@@ -33,7 +33,7 @@ public class Wall : MonoBehaviour
         {
             renderer.enabled = true;
             this.name += " Cleared";
-            StartCoroutine(WaitAndHideDisplay());
+            //StartCoroutine(WaitAndHideDisplay());
         }
     }
 
