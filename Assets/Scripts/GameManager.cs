@@ -18,5 +18,6 @@ public class GameManager : MonoBehaviour
         mapGenerator.SetupCircle();
         gravityManager.SubscribeToGravity(player.Rigidbody2D);
         gravityManager.StartGravity();
+        player.Initilize(mapGenerator.GetWalls(), gravityManager);
     }
 }

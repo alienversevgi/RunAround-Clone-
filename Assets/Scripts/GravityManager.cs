@@ -10,8 +10,9 @@ public class GravityManager : MonoBehaviour
 
     private Rigidbody2D centerOfRigidbody;
     private List<Rigidbody2D> objects;
-
     private float force;
+
+    public bool IsGravityActive { get; private set; }
 
     private void Awake()
     {
@@ -21,10 +22,13 @@ public class GravityManager : MonoBehaviour
 
     private void Update()
     {
-        for (int i = 0; i < objects.Count; i++)
+        if (IsGravityActive)
         {
-            Vector3 dir = (centerOfRigidbody.transform.position - objects[i].transform.position);
-            objects[i].AddForce(-force * dir);
+            for (int i = 0; i < objects.Count; i++)
+            {
+                Vector3 dir = (centerOfRigidbody.transform.position - objects[i].transform.position);
+                objects[i].AddForce(-force * dir);
+            }
         }
     }
 
@@ -33,10 +37,26 @@ public class GravityManager : MonoBehaviour
         Rigidbody2D firstObject = objects.First();
         float distance = Vector3.Distance(centerOfRigidbody.transform.position, firstObject.transform.position);
         force = G * ((centerOfRigidbody.mass * firstObject.mass) / Mathf.Pow(distance, 2));
+        IsGravityActive = true;
     }
 
     public void SubscribeToGravity(Rigidbody2D rigidbodyOfObject)
     {
         objects.Add(rigidbodyOfObject);
     }
+
+    public void SetActiveGravity(bool isActive)
+    {
+        IsGravityActive = isActive;
+        //StartCoroutine(Test());
+    }
+
+    private IEnumerator Test()
+    {
+        yield return new WaitForSeconds(0.2f);
+        IsGravityActive = true;
+    }
 }
+
+
+
