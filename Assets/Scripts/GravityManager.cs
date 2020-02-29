@@ -53,7 +53,7 @@ public class GravityManager : MonoBehaviour
 
     private IEnumerator Test()
     {
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(0.005f);
         IsGravityActive = true;
     }
 }

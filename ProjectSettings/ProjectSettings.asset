@@ -143,9 +143,6 @@ PlayerSettings:
     oculus:
       sharedDepthBuffer: 1
       dashSupport: 1
-      lowOverheadMode: 0
-      protectedContext: 0
-      v2Signing: 0
     enable360StereoCapture: 0
   protectGraphicsMemory: 0
   enableFrameTimingStats: 0
@@ -248,7 +245,7 @@ PlayerSettings:
   AndroidTargetArchitectures: 5
   AndroidSplashScreenScale: 0
   androidSplashScreen: {fileID: 0}
-  AndroidKeystoreName: E:/UnityProjects/WalkAround/walkarounddemo/user.keystore
+  AndroidKeystoreName: F:/UnityLesson/MyLesson/RunAround/walkarounddemo/user.keystore
   AndroidKeyaliasName: ssqwer123
   AndroidBuildApkPerCpuArchitecture: 0
   AndroidTVCompatibility: 1

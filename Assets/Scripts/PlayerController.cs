@@ -23,10 +23,12 @@ public class PlayerController : MonoBehaviour
 
     public Text txt;
 
+    public bool isResetRequiring;
+
     #endregion
 
     #region Unity Methods
-
+    float distance;
     private void Update()
     {
         if (isMovingPlayer)
@@ -34,27 +36,49 @@ public class PlayerController : MonoBehaviour
             this.transform.position += transform.up * speed * Time.deltaTime;
         }
 
-        float distance = Vector2.Distance(this.transform.position, Vector2.zero);
-
-        Debug.Log(distance);
-
-        if (Input.GetMouseButton(0))
+        distance = Vector2.Distance(this.transform.position, Vector2.zero);
+        //Debug.LogError(distance.ToString());
+        if (doesCollideToCircle && Input.GetMouseButtonDown(0))
         {
-            gravityManager.SetActiveGravity(false);
-            Rigidbody2D.AddForce(transform.right * (jumpForce * 100) * Time.deltaTime);
+            isResetRequiring = false;
+        }
+
+        if (!isResetRequiring && Input.GetMouseButton(0))
+        {
+            if (distance < 2.8f)
+            {
+                gravityManager.SetActiveGravity(true);
+                isResetRequiring = true;
+            }
+            else
+            {
+                gravityManager.SetActiveGravity(false);
+                Rigidbody2D.AddForce(transform.right * (jumpForce * 100) * Time.deltaTime);
+            }
         }
 
         if (Input.GetMouseButtonUp(0))
         {
-            gravityManager.SetActiveGravity(true);
-        }
-
-        if (distance > 2.0f && distance < 3.0f)
-        {
-            gravityManager.SetActiveGravity(true);
+            StartCoroutine(ForceCoroutine(3.46f));
+     
         }
 
         txt.text = jumpForce.ToString();
+    }
+
+    private IEnumerator ForceCoroutine(float targetDistance)
+    {
+        int count =0;
+        StopCoroutine(ForceCoroutine(targetDistance));
+        while (distance > targetDistance)
+        {
+            count++;
+            Debug.Log(count.ToString());
+            Rigidbody2D.AddForce(transform.right * (jumpForce * 100) * Time.deltaTime);
+            yield return new WaitForEndOfFrame();
+        }
+        gravityManager.SetActiveGravity(true);
+        Debug.Log ("Finished");
     }
 
     private void FixedUpdate()
