@@ -804,6 +804,16 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Circle
       objectReference: {fileID: 0}
+    - target: {fileID: 4710985692602623799, guid: 23c9e69c5f614d2438df3d1cee340ddc,
+        type: 3}
+      propertyPath: test
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4710985692602623799, guid: 23c9e69c5f614d2438df3d1cee340ddc,
+        type: 3}
+      propertyPath: clear
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1241406276834793214, guid: 23c9e69c5f614d2438df3d1cee340ddc,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1174,12 +1184,12 @@ PrefabInstance:
     - target: {fileID: 1806033340335025816, guid: 223e5c1f7a4796d41b58580fede19e8e,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.707102
+      value: -0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: 1806033340335025816, guid: 223e5c1f7a4796d41b58580fede19e8e,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.70711166
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: 1806033340335025816, guid: 223e5c1f7a4796d41b58580fede19e8e,
         type: 3}

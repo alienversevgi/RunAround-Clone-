@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-//[ExecuteInEditMode]
+[ExecuteInEditMode]
 public class MapGenerator : MonoBehaviour
 {
+    private const float TAU = 6.28318530718f;
+
     [SerializeField] private LookAt2D wallPrefab;
 
     [SerializeField] private uint segments;
@@ -47,20 +49,20 @@ public class MapGenerator : MonoBehaviour
 
     public void SetupCircle()
     {
-        float delta = 20;
-        float deltaTheta = 360 / segments;
         listOfGameobjects = new List<GameObject>();
 
         for (int i = 0; i < segments; i++)
         {
-            float x = Mathf.Sin(Mathf.Deg2Rad * delta) * xRadius;
-            float y = Mathf.Cos(Mathf.Deg2Rad * delta) * yRadius;
+            float t = i / (float)segments;
+            float radian = t * TAU;
+
+            float x = Mathf.Sin(radian) * xRadius;
+            float y = Mathf.Cos(radian) * yRadius;
             LookAt2D clone = Instantiate(wallPrefab, new Vector3(x, y), Quaternion.identity, this.transform);
             clone.name = i.ToString();
             clone.SetTarget(Center);
             listOfGameobjects.Add(clone.gameObject);
             walls.Add(clone.GetComponent<Wall>());
-            delta += deltaTheta;
         }
 
         SetCollider();

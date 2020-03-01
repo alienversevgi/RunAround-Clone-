@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//[ExecuteInEditMode]
 public class LookAt2D : MonoBehaviour
 {
     [SerializeField] private Transform target;
