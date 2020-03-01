@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -8,36 +9,88 @@ public class PlayerController : MonoBehaviour
 {
     #region Fields
 
-    private const string CircleTag = "Circle";
+    private const string CIRCLE_TAG = "Circle";
+    private const float MIN_JUMPFORCE = 3.46f;
 
     // max speed : 5.6
     [SerializeField] private float speed = 0.1f;
     [SerializeField] private float jumpForce = 100;
 
     public Rigidbody2D Rigidbody2D;
-    public bool isMovingPlayer;
 
-    private bool doesCollideToCircle;
+    public event Action ProgressIncreased;
+
     private List<Wall> walls;
     private GravityManager gravityManager;
-
-    public Text txt;
-
-    public bool isResetRequiring;
+    private bool doesCollideToCircle;
+    private bool isMovingPlayer;
+    private bool isResetRequiring;
+    private float distance;
 
     #endregion
 
     #region Unity Methods
-    float distance;
+
     private void Update()
     {
-        if (isMovingPlayer)
+        if (doesCollideToCircle)
         {
-            this.transform.position += transform.up * speed * Time.deltaTime;
+            Wall wall = GetNearestWall();
+
+            if (!wall.IsActivated)
+            {
+                wall.ActivateRenderer();
+                ProgressIncreased();
+            }
         }
 
+        if (isMovingPlayer)
+            this.transform.position += transform.up * speed * Time.deltaTime;
+
+        CheckJumpProgress();
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.collider.CompareTag(CIRCLE_TAG))
+            doesCollideToCircle = true;
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.collider.CompareTag(CIRCLE_TAG))
+            doesCollideToCircle = false;
+    }
+
+    #endregion
+
+    #region Public Methods
+
+    public void Initilize(List<Wall> walls, GravityManager gravityManager)
+    {
+        this.walls = walls;
+        this.gravityManager = gravityManager;
+        StartCoroutine(WaitAndPrepareFirstPlay());
+    }
+
+    public void IncreaseumpForce()
+    {
+        jumpForce++;
+    }
+
+    public void DecreaseJumpForce()
+    {
+        jumpForce--;
+    }
+
+    #endregion
+
+    #region Private Methods
+
+    private void CheckJumpProgress()
+    {
         distance = Vector2.Distance(this.transform.position, Vector2.zero);
-        //Debug.LogError(distance.ToString());
+
         if (doesCollideToCircle && Input.GetMouseButtonDown(0))
         {
             isResetRequiring = false;
@@ -59,80 +112,8 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetMouseButtonUp(0))
         {
-            StartCoroutine(ForceCoroutine(3.46f));
-     
+            StartCoroutine(ForceCoroutine(MIN_JUMPFORCE));
         }
-
-        txt.text = jumpForce.ToString();
-    }
-
-    private IEnumerator ForceCoroutine(float targetDistance)
-    {
-        int count =0;
-        StopCoroutine(ForceCoroutine(targetDistance));
-        while (distance > targetDistance)
-        {
-            count++;
-            Debug.Log(count.ToString());
-            Rigidbody2D.AddForce(transform.right * (jumpForce * 100) * Time.deltaTime);
-            yield return new WaitForEndOfFrame();
-        }
-        gravityManager.SetActiveGravity(true);
-        Debug.Log ("Finished");
-    }
-
-    private void FixedUpdate()
-    {
-        if (doesCollideToCircle)
-        {
-            GetNearestWall().ActivateRenderer();
-        }
-    }
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.collider.CompareTag(CircleTag))
-            doesCollideToCircle = true;
-    }
-
-    private void OnCollisionExit2D(Collision2D collision)
-    {
-        if (collision.collider.CompareTag(CircleTag))
-            doesCollideToCircle = false;
-    }
-
-    #endregion
-
-    #region Public Methods
-    public void Initilize(List<Wall> walls, GravityManager gravityManager)
-    {
-        this.walls = walls;
-        this.gravityManager = gravityManager;
-        StartCoroutine(WaitAndPrepareFirstPlay());
-    }
-
-    public void IncreaseumpForce()
-    {
-        jumpForce++;
-    }
-
-    public void DecreaseJumpForce()
-    {
-        jumpForce--;
-    }
-
-    #endregion
-
-    #region Private Methods
-    private IEnumerator WaitAndPrepareFirstPlay()
-    {
-        while (!doesCollideToCircle)
-        {
-            yield return new WaitForEndOfFrame();
-        }
-
-        yield return new WaitForEndOfFrame();
-        yield return new WaitForEndOfFrame();
-        isMovingPlayer = true;
     }
 
     private Wall GetNearestWall()
@@ -152,6 +133,30 @@ public class PlayerController : MonoBehaviour
         }
 
         return selectedWall;
+    }
+
+    private IEnumerator WaitAndPrepareFirstPlay()
+    {
+        while (!doesCollideToCircle)
+        {
+            yield return new WaitForEndOfFrame();
+        }
+
+        yield return new WaitForEndOfFrame();
+        yield return new WaitForEndOfFrame();
+        isMovingPlayer = true;
+    }
+
+    private IEnumerator ForceCoroutine(float targetDistance)
+    {
+        StopCoroutine(ForceCoroutine(targetDistance));
+
+        while (distance > targetDistance)
+        {
+            Rigidbody2D.AddForce(transform.right * (jumpForce * 100) * Time.deltaTime);
+            yield return new WaitForEndOfFrame();
+        }
+        gravityManager.SetActiveGravity(true);
     }
 
     #endregion

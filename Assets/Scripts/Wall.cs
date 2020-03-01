@@ -5,6 +5,7 @@ using UnityEngine;
 public class Wall : MonoBehaviour
 {
     private SpriteRenderer renderer;
+    public bool IsActivated => renderer.enabled;
 
     private void Awake()
     {
@@ -18,23 +19,10 @@ public class Wall : MonoBehaviour
         transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.collider.CompareTag("Player"))
-        {
-            //renderer.enabled = true;
-            //StartCoroutine(WaitAndHideDisplay());
-        }       
-    }
-
     public void ActivateRenderer()
     {
-        if (!renderer.enabled)
-        {
-            renderer.enabled = true;
-            this.name += " Cleared";
-            //StartCoroutine(WaitAndHideDisplay());
-        }
+        renderer.enabled = true;
+        this.name += " Cleared";
     }
 
     private IEnumerator WaitAndHideDisplay()

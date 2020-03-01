@@ -79,4 +79,9 @@ public class MapGenerator : MonoBehaviour
     {
         return walls;
     }
+
+    public uint GetSegmentCount()
+    {
+        return segments;
+    }
 }
