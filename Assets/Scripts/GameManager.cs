@@ -10,6 +10,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GravityManager gravityManager;
     [SerializeField] private MapGenerator mapGenerator;
     [SerializeField] private UIManager uiManager;
+    [SerializeField] private List<Enemy> enemys;
+    private bool isGameOver;
 
     private void Start()
     {
@@ -23,6 +25,14 @@ public class GameManager : MonoBehaviour
         gravityManager.StartGravity();
         player.Initilize(mapGenerator.GetWalls(), gravityManager);
         player.ProgressIncreased += Player_ProgressIncreased;
+
+        List<Transform> wallTransforms = mapGenerator.GetWalls().Select(wall => wall.transform).ToList();
+        foreach (Enemy enemy in enemys)
+        {
+            enemy.Initialize(wallTransforms, GameOver);
+            enemy.EnableAction();
+            gravityManager.SubscribeToGravity(enemy.rigidbody);
+        }
     }
 
     private void Player_ProgressIncreased()
@@ -39,5 +49,13 @@ public class GameManager : MonoBehaviour
     private sbyte GetPercentage(float current, float max)
     {
         return (sbyte)((current / max) * 100); ;
+    }
+
+    private void GameOver()
+    {
+        isGameOver = true;
+        player.StopPlayer();
+        enemys.ForEach(enemy => enemy.DisableAction());
+        gravityManager.SetActiveGravity(false);
     }
 }

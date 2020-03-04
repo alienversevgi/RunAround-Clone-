@@ -7,6 +7,7 @@ using UnityEngine;
 public class MapGenerator : MonoBehaviour
 {
     private const float TAU = 6.28318530718f;
+    private const float CENTER_BUFFER_SIZE = 0.5f;
 
     [SerializeField] private LookAt2D wallPrefab;
 
@@ -66,6 +67,7 @@ public class MapGenerator : MonoBehaviour
         }
 
         SetCollider();
+        SetUpCenterBackground();
     }
 
     public void SetCollider()
@@ -73,6 +75,12 @@ public class MapGenerator : MonoBehaviour
         List<Vector2> points = GetWalls().Select(it => new Vector2(it.transform.position.x, it.transform.position.y)).ToList(); ;
         points.Add(points[0]);
         collider.points = points.ToArray();
+    }
+
+    private void SetUpCenterBackground()
+    {
+        float size = (xRadius + yRadius) + CENTER_BUFFER_SIZE;
+        Center.localScale = new Vector2(size, size);
     }
 
     public List<Wall> GetWalls()

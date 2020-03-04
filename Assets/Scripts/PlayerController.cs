@@ -13,7 +13,7 @@ public class PlayerController : MonoBehaviour
     private const float MIN_JUMPFORCE = 3.46f;
 
     // max speed : 5.6
-    [SerializeField] private float speed = 0.1f;
+    [SerializeField] private float speed = 4.0f;
     [SerializeField] private float jumpForce = 100;
 
     public Rigidbody2D Rigidbody2D;
@@ -25,14 +25,18 @@ public class PlayerController : MonoBehaviour
     private bool doesCollideToCircle;
     private bool isMovingPlayer;
     private bool isResetRequiring;
+    private bool isControllerEnable = true;
     private float distance;
-
+    
     #endregion
 
     #region Unity Methods
 
     private void Update()
     {
+        if (!isControllerEnable)
+            return;
+
         if (doesCollideToCircle)
         {
             Wall wall = GetNearestWall();
@@ -83,6 +87,11 @@ public class PlayerController : MonoBehaviour
         jumpForce--;
     }
 
+    public void StopPlayer()
+    {
+        isControllerEnable = false;
+    }
+
     #endregion
 
     #region Private Methods
@@ -112,6 +121,7 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetMouseButtonUp(0))
         {
+            isResetRequiring = true;
             StartCoroutine(ForceCoroutine(MIN_JUMPFORCE));
         }
     }

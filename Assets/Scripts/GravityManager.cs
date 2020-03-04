@@ -48,15 +48,5 @@ public class GravityManager : MonoBehaviour
     public void SetActiveGravity(bool isActive)
     {
         IsGravityActive = isActive;
-        //StartCoroutine(Test());
-    }
-
-    private IEnumerator Test()
-    {
-        yield return new WaitForSeconds(0.005f);
-        IsGravityActive = true;
     }
 }
-
-
-
