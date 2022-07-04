@@ -16,7 +16,7 @@ public abstract class Enemy : MonoBehaviour
 
     protected Collider2D collider;
     protected SpriteRenderer renderer;
-    protected List<Transform> positions;
+    protected List<Vector2> positions;
     protected bool isColorSwitchAnimationFinished;
 
     private Action gameOverAction;
@@ -31,7 +31,7 @@ public abstract class Enemy : MonoBehaviour
         rigidbody = this.GetComponent<Rigidbody2D>();
     }
 
-    public virtual void Initialize(List<Transform> positions, Action gameOverAction)
+    public virtual void Initialize(List<Vector2> positions, Action gameOverAction)
     {
         this.positions = positions;
         this.gameOverAction = gameOverAction;
@@ -44,9 +44,9 @@ public abstract class Enemy : MonoBehaviour
         StartCoroutine(ColorSwitch());
     }
 
-    protected Vector3 GetRandomPosition()
+    protected Vector2 GetRandomPosition()
     {
-        return positions[Random.Range(0, positions.Count)].position;
+        return positions[Random.Range(0, positions.Count)];
     }
 
     public virtual IEnumerator ColorSwitch()

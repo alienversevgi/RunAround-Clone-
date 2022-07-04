@@ -29,7 +29,7 @@ public class GameManager : MonoBehaviour
         List<Transform> wallTransforms = mapGenerator.GetWalls().Select(wall => wall.transform).ToList();
         foreach (Enemy enemy in enemys)
         {
-            enemy.Initialize(wallTransforms, GameOver);
+            enemy.Initialize(mapGenerator.GetCirclePoints(), GameOver);
             enemy.EnableAction();
             gravityManager.SubscribeToGravity(enemy.rigidbody);
         }
