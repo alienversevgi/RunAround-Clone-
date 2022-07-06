@@ -12,9 +12,8 @@ public class PlayerController : MonoBehaviour
     private const string CIRCLE_TAG = "Circle";
     private const float MIN_JUMPFORCE = 3.46f;
 
-    // max speed : 5.6
     [SerializeField] private float speed = 4.0f;
-    [SerializeField] private float jumpForce = 100;
+    [SerializeField] private float jumpForce = 20;
 
     public Rigidbody2D Rigidbody2D;
 

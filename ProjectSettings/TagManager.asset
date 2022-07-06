@@ -43,3 +43,18 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: CircleBackground
+    uniqueID: 2544499875
+    locked: 0
+  - name: Player
+    uniqueID: 1044471295
+    locked: 0
+  - name: Enemy
+    uniqueID: 1773804153
+    locked: 0
+  - name: Circle
+    uniqueID: 301818717
+    locked: 0
+  - name: Wall
+    uniqueID: 4265226529
+    locked: 0

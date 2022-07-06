@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -6,11 +6,10 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 public class GravityManager : MonoBehaviour
 {
-    [SerializeField] private float G = 10;
+    [SerializeField] private float G = 25;
 
     private Rigidbody2D centerOfRigidbody;
     private List<Rigidbody2D> objects;
-    private float force;
 
     public bool IsGravityActive { get; private set; }
 
@@ -20,24 +19,29 @@ public class GravityManager : MonoBehaviour
         objects = new List<Rigidbody2D>();
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         if (IsGravityActive)
         {
             for (int i = 0; i < objects.Count; i++)
             {
                 Vector3 dir = (centerOfRigidbody.transform.position - objects[i].transform.position);
-                objects[i].AddForce(-force * dir);
+                objects[i].AddForce(GetForce(objects[i]) * dir * Time.deltaTime);
             }
         }
     }
 
     public void StartGravity()
     {
-        Rigidbody2D firstObject = objects.First();
-        float distance = Vector3.Distance(centerOfRigidbody.transform.position, firstObject.transform.position);
-        force = G * ((centerOfRigidbody.mass * firstObject.mass) / Mathf.Pow(distance, 2));
         IsGravityActive = true;
+    }
+
+    private float GetForce(Rigidbody2D objectOfElement)
+    {
+        float distance = Vector3.Distance(centerOfRigidbody.transform.position, objectOfElement.transform.position);
+        float force = G * ((centerOfRigidbody.mass * objectOfElement.mass) / Mathf.Pow(distance, 2));
+
+        return -force;
     }
 
     public void SubscribeToGravity(Rigidbody2D rigidbodyOfObject)

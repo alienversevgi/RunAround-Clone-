@@ -25,7 +25,11 @@ public class GameManager : MonoBehaviour
         gravityManager.StartGravity();
         player.Initilize(mapGenerator.GetWalls(), gravityManager);
         player.ProgressIncreased += Player_ProgressIncreased;
+        InitEnemys();
+    }
 
+    private void InitEnemys()
+    {
         List<Transform> wallTransforms = mapGenerator.GetWalls().Select(wall => wall.transform).ToList();
         foreach (Enemy enemy in enemys)
         {
