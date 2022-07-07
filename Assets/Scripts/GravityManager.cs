@@ -31,11 +31,6 @@ public class GravityManager : MonoBehaviour
         }
     }
 
-    public void StartGravity()
-    {
-        IsGravityActive = true;
-    }
-
     private float GetForce(Rigidbody2D objectOfElement)
     {
         float distance = Vector3.Distance(centerOfRigidbody.transform.position, objectOfElement.transform.position);
@@ -47,6 +42,11 @@ public class GravityManager : MonoBehaviour
     public void SubscribeToGravity(Rigidbody2D rigidbodyOfObject)
     {
         objects.Add(rigidbodyOfObject);
+    }
+
+    public void UnsubscribeToGravity(Rigidbody2D rigidbodyOfObject)
+    {
+        objects.Remove(rigidbodyOfObject);
     }
 
     public void SetActiveGravity(bool isActive)

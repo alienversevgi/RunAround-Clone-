@@ -6,18 +6,15 @@ using UnityEngine;
 [ExecuteInEditMode]
 public class MapGenerator : MonoBehaviour
 {
+    private const int SEGMENT_COUNT = 90;
     private const float TAU = 6.28318530718f;
     private const float CENTER_BUFFER_SIZE = 0.5f;
+    private const float X_RADIUS = 4;
+    private const float Y_RADIUS = 4;
 
+    [SerializeField] private PercentageIndicator percentageIndicator;
     [SerializeField] private LookAt2D wallPrefab;
-
-    [SerializeField] private int segments;
-    [SerializeField] private float xRadius;
-    [SerializeField] private float yRadius;
     [SerializeField] private EdgeCollider2D collider;
-
-    public bool test;
-    public bool clear;
 
     public Transform Center;
 
@@ -25,35 +22,13 @@ public class MapGenerator : MonoBehaviour
     private List<Wall> walls;
     private List<Vector2> circlePoints;
 
-    private void Awake()
-    {
-        walls = new List<Wall>();
-    }
-
-    public void Update()
-    {
-        if (test)
-        {
-            SetupCircle();
-            test = false;
-        }
-
-        if (clear)
-        {
-            foreach (var item in listOfGameobjects)
-            {
-                DestroyImmediate(item);
-            }
-            clear = false;
-            listOfGameobjects.Clear();
-        }
-    }
-
     public void SetupCircle()
     {
+        walls = new List<Wall>();
         listOfGameobjects = new List<GameObject>();
 
-        List<Vector2> circlePoints = GetCirclePoints(segments, xRadius, yRadius);
+        List<Vector2> circlePoints = GetCirclePoints(SEGMENT_COUNT, X_RADIUS, Y_RADIUS);
+
         for (int i = 0; i < circlePoints.Count; i++)
         {
             LookAt2D clone = Instantiate(wallPrefab, circlePoints[i], Quaternion.identity, this.transform);
@@ -73,7 +48,7 @@ public class MapGenerator : MonoBehaviour
 
         for (int i = 0; i < segmentCount; i++)
         {
-            float t = i / (float)segments;
+            float t = i / (float)SEGMENT_COUNT;
             float radian = t * TAU;
 
             float x = Mathf.Sin(radian) * xRadius;
@@ -86,23 +61,50 @@ public class MapGenerator : MonoBehaviour
         return points;
     }
 
+
+    public void UpdateProgress()
+    {
+        sbyte percentage = GetMapCompletedPercentage();
+        percentageIndicator.SetPercentageText(percentage);
+        
+        if (percentage.Equals(100))
+        {
+            EventManager.Instance.OnLevelCompleted.Raise();
+        }
+    }
+
+    public void Reset()
+    {
+        walls.ForEach(wall => wall.DeactivateRenderer());
+        percentageIndicator.SetPercentageText(0);
+    }
+
+    private sbyte GetMapCompletedPercentage()
+    {
+        int activatedCount = GetWalls().Count(it => it.IsActivated);
+        return GetPercentage(activatedCount, MapGenerator.SEGMENT_COUNT);
+    }
+
+    private sbyte GetPercentage(float current, float max)
+    {
+        return (sbyte)((current / max) * 100); ;
+    }
+
     public void SetCollider()
     {
         List<Vector2> points = GetWalls().Select(it => new Vector2(it.transform.position.x, it.transform.position.y)).ToList(); ;
         points.Add(points[0]);
-        circlePoints = GetCirclePoints(segments, xRadius + .1f, yRadius + .1f);
+        circlePoints = GetCirclePoints(SEGMENT_COUNT, X_RADIUS + .05f, Y_RADIUS + .05f);
         collider.points = circlePoints.ToArray();
     }
 
     private void SetUpCenterBackground()
     {
-        float size = (xRadius + yRadius) + CENTER_BUFFER_SIZE;
+        float size = (X_RADIUS + Y_RADIUS) + CENTER_BUFFER_SIZE;
         Center.localScale = new Vector2(size, size);
     }
 
     public List<Wall> GetWalls() => walls;
-
-    public int GetSegmentCount() => segments;
 
     public List<Vector2> GetCirclePoints() => circlePoints;
 }

@@ -2,12 +2,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using EnverPool;
 using Random = UnityEngine.Random;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(Collider2D))]
 [RequireComponent(typeof(LookAt2D))]
-public abstract class Enemy : MonoBehaviour
+public abstract class Enemy : Entity
 {
     private const sbyte COLOR_SWITCH_COUNT = 3;
     private const float COLOR_SWITCH_SECONDS = 0.3f;
@@ -16,10 +17,8 @@ public abstract class Enemy : MonoBehaviour
 
     protected Collider2D collider;
     protected SpriteRenderer renderer;
-    protected List<Vector2> positions;
+    protected List<Vector2> circlePoints;
     protected bool isColorSwitchAnimationFinished;
-
-    private Action gameOverAction;
 
     public abstract void EnableAction();
     public abstract void DisableAction();
@@ -31,26 +30,28 @@ public abstract class Enemy : MonoBehaviour
         rigidbody = this.GetComponent<Rigidbody2D>();
     }
 
-    public virtual void Initialize(List<Vector2> positions, Action gameOverAction)
+    public void SetCirclePoints(List<Vector2> circlePoints)
     {
-        this.positions = positions;
-        this.gameOverAction = gameOverAction;
+        this.circlePoints = circlePoints;
     }
 
-    public virtual void SetPosition(Vector3 position)
+    protected void ShowColorSwitchAnimation()
     {
-        ResetEnemy();
-        this.transform.position = position;
+        isColorSwitchAnimationFinished = false;
+
+        rigidbody.isKinematic = true;
+        collider.enabled = false;
         StartCoroutine(ColorSwitch());
     }
 
     protected Vector2 GetRandomPosition()
     {
-        return positions[Random.Range(0, positions.Count)];
+        return circlePoints[Random.Range(0, circlePoints.Count)];
     }
 
     public virtual IEnumerator ColorSwitch()
     {
+        renderer.color = Color.yellow;
         for (sbyte i = 0; i < COLOR_SWITCH_COUNT; i++)
         {
             renderer.enabled = false;
@@ -65,19 +66,12 @@ public abstract class Enemy : MonoBehaviour
         isColorSwitchAnimationFinished = true;
     }
 
-    private void ResetEnemy()
-    {
-        isColorSwitchAnimationFinished = false;
-        renderer.color = Color.yellow;
-        rigidbody.isKinematic = true;
-        collider.enabled = false;
-    }
-
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.collider.CompareTag("Player") && collision.otherCollider.CompareTag("Enemy"))
         {
-            gameOverAction();
+            DisableAction();
+            EventManager.Instance.OnCollideEnemy.Raise();
         }
     }
 }

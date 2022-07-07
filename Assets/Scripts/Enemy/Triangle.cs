@@ -4,13 +4,19 @@ using UnityEngine;
 
 public class Triangle : Enemy
 {
-    private const float POSITION_CHANGE_TIME = 5.0f;
+    // = 5.0f
+    private float _teleportRate;
+
+    public void Initialize(float teleportRate)
+    {
+        _teleportRate = teleportRate;
+    }
 
     public override void EnableAction()
     {
         StartCoroutine(TransportCoroutine());
     }
-    
+
     public override void DisableAction()
     {
         StopAllCoroutines();
@@ -18,10 +24,12 @@ public class Triangle : Enemy
 
     private IEnumerator TransportCoroutine()
     {
+        ShowColorSwitchAnimation();
         while (true)
         {
-            SetPosition(GetRandomPosition());
-            yield return new WaitForSecondsRealtime(POSITION_CHANGE_TIME);
+            yield return new WaitForSecondsRealtime(_teleportRate);
+            SetPositionAndEnable(GetRandomPosition());
+            ShowColorSwitchAnimation();
         }
     }
 }

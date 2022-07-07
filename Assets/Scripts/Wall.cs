@@ -25,6 +25,12 @@ public class Wall : MonoBehaviour
         this.name += " Cleared";
     }
 
+    public void DeactivateRenderer()
+    {
+        renderer.enabled = false;
+        this.name = "Wall";
+    }
+
     private IEnumerator WaitAndHideDisplay()
     {
         StopCoroutine(WaitAndHideDisplay());

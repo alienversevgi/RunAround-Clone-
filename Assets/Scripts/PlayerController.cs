@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,20 +19,30 @@ public class PlayerController : MonoBehaviour
 
     public event Action ProgressIncreased;
 
+    private Vector2 defaultStartPosition = new Vector2(0.0f, -3.8f);
     private List<Wall> walls;
     private GravityManager gravityManager;
+    private Coroutine airWaitCouritine;
+
     private bool doesCollideToCircle;
     private bool isMovingPlayer;
     private bool isResetRequiring;
-    private bool isControllerEnable = true;
+    private bool isControllerEnable;
     private float distance;
-    
+    private bool isFirstInputDetected;
+
     #endregion
 
     #region Unity Methods
 
     private void Update()
     {
+        if (!isFirstInputDetected && Input.GetMouseButton(0))
+        {
+            isFirstInputDetected = true;
+            EventManager.Instance.OnFirstInputDetected.Raise();
+        }
+
         if (!isControllerEnable)
             return;
 
@@ -73,22 +83,17 @@ public class PlayerController : MonoBehaviour
     {
         this.walls = walls;
         this.gravityManager = gravityManager;
-        StartCoroutine(WaitAndPrepareFirstPlay());
+        this.transform.position = defaultStartPosition;
+        isMovingPlayer = true;
+        isFirstInputDetected = false;
     }
 
-    public void IncreaseumpForce()
-    {
-        jumpForce++;
-    }
 
-    public void DecreaseJumpForce()
+    public void SetActiveController(bool isActive)
     {
-        jumpForce--;
-    }
-
-    public void StopPlayer()
-    {
-        isControllerEnable = false;
+        isControllerEnable = isActive;
+        isFirstInputDetected = isActive;
+        this.transform.position = defaultStartPosition;
     }
 
     #endregion
@@ -106,16 +111,7 @@ public class PlayerController : MonoBehaviour
 
         if (!isResetRequiring && Input.GetMouseButton(0))
         {
-            if (distance < 2.8f)
-            {
-                gravityManager.SetActiveGravity(true);
-                isResetRequiring = true;
-            }
-            else
-            {
-                gravityManager.SetActiveGravity(false);
-                Rigidbody2D.AddForce(transform.right * (jumpForce * 100) * Time.deltaTime);
-            }
+            Jump();
         }
 
         if (Input.GetMouseButtonUp(0))
@@ -124,6 +120,47 @@ public class PlayerController : MonoBehaviour
             StartCoroutine(ForceCoroutine(MIN_JUMPFORCE));
         }
     }
+
+    private void Jump()
+    {
+        if (IsPlayerInAir())
+        {
+            if (airWaitCouritine == null)
+            {
+                gravityManager.SetActiveGravity(false);
+                Rigidbody2D.velocity = Vector2.zero;
+                Rigidbody2D.bodyType = RigidbodyType2D.Kinematic;
+
+                //wait a second in the air
+                airWaitCouritine = Utility.Timer.Instance.StartTimer(.1f, () =>
+                {
+                    Rigidbody2D.bodyType = RigidbodyType2D.Dynamic;
+                    gravityManager.SetActiveGravity(true);
+                    isResetRequiring = true;
+                    airWaitCouritine = null;
+                });
+            }
+        }
+        else
+        {
+            gravityManager.SetActiveGravity(false);
+            Rigidbody2D.bodyType = RigidbodyType2D.Dynamic;
+            Rigidbody2D.AddForce(transform.right * (jumpForce * 100) * Time.deltaTime);
+        }
+    }
+
+    private bool IsPlayerInAir()
+    {
+        Ray2D ray;
+        int wallLayerMask = LayerMask.GetMask("Circle");
+
+        RaycastHit2D hit = Physics2D.Raycast(this.transform.position, -this.transform.right, 10, wallLayerMask);
+
+        bool isPlayerInAir = hit.distance > 2.0f && hit.distance < 2.5f;
+
+        return isPlayerInAir;
+    }
+
 
     private Wall GetNearestWall()
     {
@@ -142,18 +179,6 @@ public class PlayerController : MonoBehaviour
         }
 
         return selectedWall;
-    }
-
-    private IEnumerator WaitAndPrepareFirstPlay()
-    {
-        while (!doesCollideToCircle)
-        {
-            yield return new WaitForEndOfFrame();
-        }
-
-        yield return new WaitForEndOfFrame();
-        yield return new WaitForEndOfFrame();
-        isMovingPlayer = true;
     }
 
     private IEnumerator ForceCoroutine(float targetDistance)

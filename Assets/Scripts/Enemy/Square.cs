@@ -4,26 +4,39 @@ using UnityEngine;
 
 public class Square : Enemy
 {
-    private const float SPEED = 3.0f;
+    // = 3.0f
+    private float _speed;
+    private bool _isMoveable;
+    private bool _isEnable;
+    private DirectionType _direction;
 
-    private bool canItMove = false;
+    public void Initialize(SquareData squareData)
+    {
+        _speed = squareData.Speed;
+        _isMoveable = squareData.IsMoveable;
+        _direction = squareData.Direction;
+    }
 
     public override void EnableAction()
     {
-        SetPosition(GetRandomPosition());
-        canItMove = true;
+        ShowColorSwitchAnimation();
+        _isEnable = true;
     }
 
     public override void DisableAction()
     {
-        canItMove = false;
+        _isEnable = false;
     }
 
     private void Update()
     {
-        if (isColorSwitchAnimationFinished && canItMove)
+        if (!_isMoveable)
+            return;
+
+        if (_isEnable && isColorSwitchAnimationFinished)
         {
-            this.transform.position += transform.up * SPEED * Time.deltaTime;
+            int direction = _direction == DirectionType.Right ? 1 : -1;
+            this.transform.position += (transform.up * direction) * _speed * Time.deltaTime;
         }
     }
 }
