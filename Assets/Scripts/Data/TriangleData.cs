@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[System.Serializable]
-public class TriangleData
+namespace Game.Level
 {
-    public Vector2 Position;
-    public float TeleportRate;
+    [System.Serializable]
+    public class TriangleData
+    {
+        public Vector2 Position;
+        public float TeleportRate;
+    }
 }

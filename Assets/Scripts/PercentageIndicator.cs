@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PercentageIndicator : MonoBehaviour
+namespace Game.UI
 {
-    [SerializeField] private Text percentageText;
-
-    public void SetPercentageText(sbyte percentage)
+    public class PercentageIndicator : MonoBehaviour
     {
-        percentageText.text = string.Concat("%", percentage.ToString());
+        [SerializeField] private Text percentageText;
+
+        public void SetPercentageText(sbyte percentage)
+        {
+            percentageText.text = string.Concat("%", percentage.ToString());
+        }
     }
 }

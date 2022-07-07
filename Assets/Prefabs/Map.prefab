@@ -268,15 +268,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e757afdb1fab1848bd3b85d5806e1ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  wallPrefab: {fileID: 6177900724329678474, guid: 9962e6a709978ca40840d4e45ad4a990,
+  _percentageIndicator: {fileID: 0}
+  _wallPrefab: {fileID: 6177900724329678474, guid: 9962e6a709978ca40840d4e45ad4a990,
     type: 3}
-  segments: 90
-  xRadius: 4
-  yRadius: 4
-  collider: {fileID: 7629158915549393737}
-  test: 0
-  clear: 0
-  Center: {fileID: 3877555762725483365}
+  _collider: {fileID: 7629158915549393737}
+  _center: {fileID: 3877555762725483365}
 --- !u!1 &3660937400786914632
 GameObject:
   m_ObjectHideFlags: 0
@@ -457,7 +453,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
+  m_Mass: 200
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 0
@@ -478,4 +474,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89a1bfe7272de60479de89b9832da72c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  G: 10
+  G: 100

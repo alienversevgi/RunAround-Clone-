@@ -2,34 +2,48 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Triangle : Enemy
+namespace Game.Level
 {
-    // = 5.0f
-    private float _teleportRate;
-
-    public void Initialize(float teleportRate)
+    public class Triangle : Enemy
     {
-        _teleportRate = teleportRate;
-    }
+        #region Fields
 
-    public override void EnableAction()
-    {
-        StartCoroutine(TransportCoroutine());
-    }
+        private float _teleportRate;
 
-    public override void DisableAction()
-    {
-        StopAllCoroutines();
-    }
+        #endregion
 
-    private IEnumerator TransportCoroutine()
-    {
-        ShowColorSwitchAnimation();
-        while (true)
+        #region Public Methods
+
+        public void Initialize(float teleportRate)
         {
-            yield return new WaitForSecondsRealtime(_teleportRate);
-            SetPositionAndEnable(GetRandomPosition());
-            ShowColorSwitchAnimation();
+            _teleportRate = teleportRate;
         }
+
+        public override void EnableAction()
+        {
+            StartCoroutine(TransportCoroutine());
+        }
+
+        public override void DisableAction()
+        {
+            StopAllCoroutines();
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        private IEnumerator TransportCoroutine()
+        {
+            ShowColorSwitchAnimation();
+            while (true)
+            {
+                yield return new WaitForSecondsRealtime(_teleportRate);
+                SetPositionAndEnable(GetRandomPosition());
+                ShowColorSwitchAnimation();
+            }
+        }
+
+        #endregion
     }
 }
