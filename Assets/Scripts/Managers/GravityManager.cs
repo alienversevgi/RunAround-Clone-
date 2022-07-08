@@ -43,14 +43,10 @@ namespace Game
 
         #region Public Methods
 
-        public void SubscribeToGravity(Rigidbody2D rigidbodyOfObject)
+        public void Initialize()
         {
-            _objects.Add(rigidbodyOfObject);
-        }
-
-        public void UnsubscribeToGravity(Rigidbody2D rigidbodyOfObject)
-        {
-            _objects.Remove(rigidbodyOfObject);
+            EventManager.Instance.OnSubscribeGravity.Register(SubscribeToGravity);
+            EventManager.Instance.OnUnsubscribeGravity.Register(UnsubscribeToGravity);
         }
 
         public void SetActiveGravity(bool isActive)
@@ -61,6 +57,16 @@ namespace Game
         #endregion
 
         #region Private Methods
+
+        private void SubscribeToGravity(Rigidbody2D rigidbodyOfObject)
+        {
+            _objects.Add(rigidbodyOfObject);
+        }
+
+        private void UnsubscribeToGravity(Rigidbody2D rigidbodyOfObject)
+        {
+            _objects.Remove(rigidbodyOfObject);
+        }
 
         private float GetForce(Rigidbody2D objectOfElement)
         {

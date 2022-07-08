@@ -17,12 +17,12 @@ namespace Game.Level
         private const sbyte COLOR_SWITCH_COUNT = 3;
         private const float COLOR_SWITCH_SECONDS = 0.3f;
 
-        public Rigidbody2D _rigidbody { get; protected set; }
-
+        protected Rigidbody2D _rigidbody;
         protected Collider2D _collider;
         protected SpriteRenderer _renderer;
         protected List<Vector2> _circlePoints;
         protected bool _isColorSwitchAnimationFinished;
+        protected bool _isEnable;
 
         #endregion
 
@@ -48,8 +48,15 @@ namespace Game.Level
 
         #region Methods
 
-        public abstract void EnableAction();
-        public abstract void DisableAction();
+        public virtual void EnableAction()
+        {
+            _isEnable = true;
+
+        }
+        public virtual void DisableAction()
+        {
+            _isEnable = false;
+        }
 
         public void SetCirclePoints(List<Vector2> circlePoints)
         {
@@ -59,9 +66,6 @@ namespace Game.Level
         protected void ShowColorSwitchAnimation()
         {
             _isColorSwitchAnimationFinished = false;
-
-            _rigidbody.isKinematic = true;
-            _collider.enabled = false;
             StartCoroutine(ColorSwitch());
         }
 
@@ -70,8 +74,10 @@ namespace Game.Level
             return _circlePoints[Random.Range(0, _circlePoints.Count)];
         }
 
-        public virtual IEnumerator ColorSwitch()
+        private IEnumerator ColorSwitch()
         {
+            _rigidbody.isKinematic = true;
+            _collider.enabled = false;
             _renderer.color = Color.yellow;
             for (sbyte i = 0; i < COLOR_SWITCH_COUNT; i++)
             {

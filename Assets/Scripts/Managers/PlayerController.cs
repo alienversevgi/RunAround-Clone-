@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using Utility;
 
 namespace Game
 {
@@ -17,8 +18,7 @@ namespace Game
         [SerializeField] private float _speed = 4.0f;
         [SerializeField] private float _jumpForce = 35.0f;
 
-        public Rigidbody2D Rigidbody2D;
-
+        private Rigidbody2D _rigidbody;
         private Vector2 _defaultStartPosition = new Vector2(0.0f, -3.8f);
         private List<Wall> _walls;
         private GravityManager _gravityManager;
@@ -35,13 +35,18 @@ namespace Game
 
         #region Unity Methods
 
+        private void Awake()
+        {
+            _rigidbody = this.GetComponent<Rigidbody2D>();
+        }
+
         private void Update()
         {
-            if (!_isFirstInputDetected && Input.GetMouseButton(0))
-            {
-                _isFirstInputDetected = true;
-                EventManager.Instance.OnFirstInputDetected.Raise();
-            }
+            //if (!_isFirstInputDetected && Input.GetMouseButton(0))
+            //{
+            //    _isFirstInputDetected = true;
+            //    Timer.Instance.StartTimer(.2f, EventManager.Instance.OnFirstInputDetected.Raise);
+            //}
 
             if (!_isControllerEnable)
                 return;
@@ -58,7 +63,7 @@ namespace Game
             }
 
             if (_isMovingPlayer)
-                this.transform.position += transform.up * _speed * Time.deltaTime;
+                this.transform.position -= transform.up * _speed * Time.deltaTime;
 
             CheckJumpProgress();
         }
@@ -86,8 +91,11 @@ namespace Game
             this.transform.position = _defaultStartPosition;
             _isMovingPlayer = true;
             _isFirstInputDetected = false;
-        }
+            _isControllerEnable = false;
 
+            EventManager.Instance.OnCountDownFinished.Register(() => SetActiveController(true));
+            EventManager.Instance.OnSubscribeGravity.Raise(_rigidbody);
+        }
 
         public void SetActiveController(bool isActive)
         {
@@ -128,13 +136,13 @@ namespace Game
                 if (_airWaitCouritine == null)
                 {
                     _gravityManager.SetActiveGravity(false);
-                    Rigidbody2D.velocity = Vector2.zero;
-                    Rigidbody2D.bodyType = RigidbodyType2D.Kinematic;
+                    _rigidbody.velocity = Vector2.zero;
+                    _rigidbody.bodyType = RigidbodyType2D.Kinematic;
 
                     //wait a second in the air
                     _airWaitCouritine = Utility.Timer.Instance.StartTimer(.1f, () =>
                     {
-                        Rigidbody2D.bodyType = RigidbodyType2D.Dynamic;
+                        _rigidbody.bodyType = RigidbodyType2D.Dynamic;
                         _gravityManager.SetActiveGravity(true);
                         _isResetRequiring = true;
                         _airWaitCouritine = null;
@@ -144,8 +152,8 @@ namespace Game
             else
             {
                 _gravityManager.SetActiveGravity(false);
-                Rigidbody2D.bodyType = RigidbodyType2D.Dynamic;
-                Rigidbody2D.AddForce(transform.right * (_jumpForce * 100) * Time.deltaTime);
+                _rigidbody.bodyType = RigidbodyType2D.Dynamic;
+                _rigidbody.AddForce(transform.right * (_jumpForce * 100) * Time.deltaTime);
             }
         }
 
@@ -160,7 +168,6 @@ namespace Game
 
             return isPlayerInAir;
         }
-
 
         private Wall GetNearestWall()
         {
@@ -187,7 +194,7 @@ namespace Game
 
             while (_distance > targetDistance)
             {
-                Rigidbody2D.AddForce(transform.right * (_jumpForce * 100) * Time.deltaTime);
+                _rigidbody.AddForce(transform.right * (_jumpForce * 100) * Time.deltaTime);
                 yield return new WaitForEndOfFrame();
             }
             _gravityManager.SetActiveGravity(true);

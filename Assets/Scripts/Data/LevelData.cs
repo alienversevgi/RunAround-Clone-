@@ -9,5 +9,6 @@ namespace Game.Level
     {
         public List<SquareData> Squares;
         public List<TriangleData> Triangles;
+        public List<ShooterData> Shooters;
     }
 }

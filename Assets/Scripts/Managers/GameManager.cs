@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Game.UI;
 
 namespace Game
 {
@@ -14,7 +15,7 @@ namespace Game
         [SerializeField] private GravityManager _gravityManager;
         [SerializeField] private MapGenerator _mapGenerator;
         [SerializeField] private LevelManager _levelManager;
-
+        [SerializeField] private CountDown _countDown;
         #endregion
 
         #region Unity Methods
@@ -32,12 +33,11 @@ namespace Game
         {
             SubsribeEvents();
             PoolManager.Instance.Initialize();
+
+            _gravityManager.Initialize();
             _mapGenerator.SetupCircle();
-
             _levelManager.Initialize(_mapGenerator.GetCirclePoints(), _gravityManager);
-
             _player.Initilize(_mapGenerator.GetWalls(), _gravityManager);
-            _gravityManager.SubscribeToGravity(_player.Rigidbody2D);
 
             StartGame();
         }
@@ -46,7 +46,7 @@ namespace Game
         {
             EventManager.Instance.OnCollideEnemy.Register(RestartLevel);
             EventManager.Instance.OnLevelCompleted.Register(NextLevel);
-            EventManager.Instance.OnFirstInputDetected.Register(ActivateLevel);
+            EventManager.Instance.OnCountDownFinished.Register(ActivateLevel);
             EventManager.Instance.OnProgressIncreased.Register(_mapGenerator.UpdateProgress);
         }
 
@@ -54,20 +54,20 @@ namespace Game
         {
             _levelManager.LoadLevel();
             _gravityManager.SetActiveGravity(true);
+            _countDown.Play();
         }
 
         private void Reset()
         {
+            PoolManager.Instance.ResetAll();
             _player.SetActiveController(false);
             _levelManager.ResetLevel();
             _gravityManager.SetActiveGravity(false);
-            PoolManager.Instance.ResetAll();
             _mapGenerator.Reset();
         }
 
         private void ActivateLevel()
         {
-            _player.SetActiveController(true);
             _levelManager.EnableLevel();
         }
 

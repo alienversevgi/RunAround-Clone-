@@ -56,27 +56,35 @@ namespace Game
             foreach (SquareData squareData in _currentLevelData.Squares)
             {
                 Square square = PoolManager.Instance.SquarePool.Allocate();
-                square.Initialize(squareData);
                 square.SetPositionAndEnable(squareData.Position);
-
+                square.Initialize(squareData);
+ 
                 _allEnemys.Add(square);
             }
 
             foreach (TriangleData triangleData in _currentLevelData.Triangles)
             {
                 Triangle triangle = PoolManager.Instance.TrianglePool.Allocate();
-                triangle.Initialize(triangleData.TeleportRate);
                 triangle.SetPositionAndEnable(triangleData.Position);
+                triangle.Initialize(triangleData.TeleportRate);
 
                 _allEnemys.Add(triangle);
+            }
+
+
+            foreach (ShooterData shooterData in _currentLevelData.Shooters)
+            {
+                Shooter shooter = PoolManager.Instance.ShooterPool.Allocate();
+                shooter.SetPositionAndEnable(shooterData.Position);
+                shooter.Initialize(shooterData);
+
+                _allEnemys.Add(shooter);
             }
 
             foreach (Enemy enemy in _allEnemys)
             {
                 enemy.SetCirclePoints(_circlePoints);
                 enemy.GetComponent<LookAt2D>().SetTarget(_gravityManager.transform);
-                _gravityManager.SubscribeToGravity(enemy._rigidbody);
-
             }
         }
 
@@ -98,7 +106,6 @@ namespace Game
         {
             foreach (Enemy enemy in _allEnemys)
             {
-                _gravityManager.UnsubscribeToGravity(enemy._rigidbody);
                 enemy.DisableAction();
             }
 

@@ -65,7 +65,7 @@ namespace Game
         {
             List<Vector2> points = GetWalls().Select(it => new Vector2(it.transform.position.x, it.transform.position.y)).ToList(); ;
             points.Add(points[0]);
-            _circlePoints = GetCirclePoints(SEGMENT_COUNT, X_RADIUS + .05f, Y_RADIUS + .05f);
+            _circlePoints = GetCirclePoints(SEGMENT_COUNT, X_RADIUS + 0.12f, Y_RADIUS + 0.12f);
             _collider.points = _circlePoints.ToArray();
         }
 

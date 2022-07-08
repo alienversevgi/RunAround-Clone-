@@ -10,7 +10,6 @@ namespace Game.Level
 
         private float _speed;
         private bool _isMoveable;
-        private bool _isEnable;
         private DirectionType _direction;
 
         #endregion
@@ -29,6 +28,12 @@ namespace Game.Level
             }
         }
 
+        public override void Reset()
+        {
+            base.Reset();
+            EventManager.Instance.OnUnsubscribeGravity.Raise(_rigidbody);
+        }
+
         #endregion
 
         #region Public Methods
@@ -38,17 +43,13 @@ namespace Game.Level
             _speed = squareData.Speed;
             _isMoveable = squareData.IsMoveable;
             _direction = squareData.Direction;
+            EventManager.Instance.OnSubscribeGravity.Raise(_rigidbody);
         }
 
         public override void EnableAction()
         {
+            base.EnableAction();
             ShowColorSwitchAnimation();
-            _isEnable = true;
-        }
-
-        public override void DisableAction()
-        {
-            _isEnable = false;
         }
 
         #endregion

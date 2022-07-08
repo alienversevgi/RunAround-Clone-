@@ -13,10 +13,8 @@ MonoBehaviour:
   m_Name: Level
   m_EditorClassIdentifier: 
   Squares:
-  - Position: {x: -3.98, y: 0}
-    Speed: 3
-    Direction: 0
+  - Position: {x: -3, y: -2.5}
+    Speed: 2
+    Direction: 1
     IsMoveable: 1
-  Triangles:
-  - Position: {x: 3.98, y: 0}
-    TeleportRate: 5
+  Triangles: []

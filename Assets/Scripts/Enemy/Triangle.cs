@@ -12,20 +12,34 @@ namespace Game.Level
 
         #endregion
 
+        #region Unity Methods
+
+        public override void Reset()
+        {
+            base.Reset();
+            EventManager.Instance.OnUnsubscribeGravity.Raise(_rigidbody);
+      
+        }
+
+        #endregion
+
         #region Public Methods
 
         public void Initialize(float teleportRate)
         {
             _teleportRate = teleportRate;
+            EventManager.Instance.OnSubscribeGravity.Raise(_rigidbody);
         }
 
         public override void EnableAction()
         {
+            base.EnableAction();
             StartCoroutine(TransportCoroutine());
         }
 
         public override void DisableAction()
         {
+            base.DisableAction();
             StopAllCoroutines();
         }
 
